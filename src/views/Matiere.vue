@@ -2,7 +2,8 @@
 import { computed, ref } from 'vue'
 import { series, matieres, annees, sources } from '../data/catalogue.js'
 import { exercices } from '../data/exercices.js'
-import { ArrowLeft, ChevronRight, ExternalLink, FileText, Dumbbell, Eye } from 'lucide-vue-next'
+import { ArrowLeft, ChevronRight, ExternalLink, FileText, Dumbbell, Eye, CircleCheck } from 'lucide-vue-next'
+import { basculer, estReussi, nbReussis } from '../progression.js'
 
 const props = defineProps(['serie', 'matiere'])
 const s = computed(() => series.find((x) => x.id === props.serie))
@@ -37,14 +38,18 @@ const liens = sources.filter((x) => x.url.includes('kamerpower') || x.url.includ
       <details v-for="n in niveaux" :key="n.id" class="mb-3 rounded-xl bg-white shadow-sm" :open="n.id === 'facile'">
         <summary class="flex items-center gap-3 px-4 py-3">
           <span :class="['text-xs font-semibold rounded-full px-3 py-1', n.couleur]">{{ n.nom }}</span>
-          <span class="flex-1 text-sm text-encre/60">{{ parNiveau(n.id).length }} exercice(s)</span>
+          <span class="flex-1 text-sm text-encre/60">{{ nbReussis(props.matiere, parNiveau(n.id)) }} / {{ parNiveau(n.id).length }} réussi(s)</span>
           <ChevronRight class="chev size-5 transition-transform" />
         </summary>
         <div class="px-4 pb-4 space-y-3">
           <article v-for="(e, i) in parNiveau(n.id)" :key="i" class="rounded-lg border border-papier p-3">
             <h3 class="font-semibold">{{ e.titre }}</h3>
             <p class="mt-1 whitespace-pre-line">{{ e.enonce }}</p>
-            <details class="mt-2">
+            <button @click="basculer(props.matiere, e.titre)"
+              :class="['mt-2 mr-3 inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold', estReussi(props.matiere, e.titre) ? 'bg-vert text-white' : 'bg-papier text-encre/70']">
+              <CircleCheck class="size-4" /> {{ estReussi(props.matiere, e.titre) ? 'Réussi' : 'Marquer réussi' }}
+            </button>
+            <details class="mt-2 inline-block">
               <summary class="inline-flex items-center gap-1 text-sm font-semibold text-vert"><Eye class="size-4" /> Voir la correction</summary>
               <p class="mt-2 whitespace-pre-line rounded-lg bg-papier p-3 text-sm">{{ e.solution }}</p>
             </details>
