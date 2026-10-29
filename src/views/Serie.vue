@@ -1,7 +1,7 @@
 <script setup>
 import { computed, watchEffect } from 'vue'
 import { series, matieres } from '../data/catalogue.js'
-import { exercices } from '../data/exercices.js'
+import { exercicesDe } from '../data/index.js'
 import { icone } from '../icons.js'
 import { etat, nbReussis } from '../progression.js'
 import { ArrowLeft } from 'lucide-vue-next'
@@ -9,8 +9,8 @@ const props = defineProps(['serie'])
 const s = computed(() => series.find((x) => x.id === props.serie))
 watchEffect(() => { if (s.value) etat.derniereSerie = s.value.id })
 
-const total = (m) => exercices[m]?.length ?? 0
-const faits = (m) => nbReussis(m, exercices[m] ?? [])
+const total = (m) => exercicesDe(m).length
+const faits = (m) => nbReussis(m, exercicesDe(m))
 const pctSerie = computed(() => {
   const t = s.value.matieres.reduce((a, m) => a + total(m), 0)
   return t ? Math.round((100 * s.value.matieres.reduce((a, m) => a + faits(m), 0)) / t) : 0

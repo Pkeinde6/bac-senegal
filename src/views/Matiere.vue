@@ -1,8 +1,8 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { series, matieres, annees, sources } from '../data/catalogue.js'
-import { exercices } from '../data/exercices.js'
-import { ArrowLeft, ChevronRight, ExternalLink, FileText, Dumbbell, Eye, CircleCheck } from 'lucide-vue-next'
+import { computed, reactive, ref } from 'vue'
+import { series, matieres } from '../data/catalogue.js'
+import { exercicesDe, epreuvesDe, seriesExosDe } from '../data/index.js'
+import { ArrowLeft, ChevronRight, ExternalLink, FileText, FileCheck, Dumbbell, Eye, CircleCheck, Shuffle, FolderOpen } from 'lucide-vue-next'
 import { basculer, estReussi, nbReussis } from '../progression.js'
 
 const props = defineProps(['serie', 'matiere'])
@@ -18,8 +18,21 @@ const niveaux = [
   { id: 'moyen', nom: 'Moyen', couleur: 'bg-jaune text-encre' },
   { id: 'difficile', nom: 'Difficile', couleur: 'bg-nuit text-white' },
 ]
-const parNiveau = (n) => (exercices[props.matiere] ?? []).filter((e) => e.niveau === n)
-const liens = sources.filter((x) => x.url.includes('kamerpower') || x.url.includes('officedubac'))
+const liste = computed(() => exercicesDe(props.matiere))
+const parNiveau = (n) => liste.value.filter((e) => e.niveau === n)
+
+// Variante courante de chaque exercice à variantes (tirée au premier affichage).
+const tirages = reactive({})
+const contenu = (e) => {
+  if (!e.generer) return e
+  if (!tirages[e.titre]) tirages[e.titre] = e.generer()
+  return tirages[e.titre]
+}
+const nouvelle = (e) => { tirages[e.titre] = e.generer() }
+
+const annees = computed(() => epreuvesDe(props.matiere, props.serie))
+const fiches = computed(() => seriesExosDe(props.matiere, props.serie))
+const nbEpreuves = computed(() => annees.value.reduce((a, [, l]) => a + l.length, 0))
 </script>
 
 <template>
@@ -31,6 +44,7 @@ const liens = sources.filter((x) => x.url.includes('kamerpower') || x.url.includ
       <button v-for="o in onglets" :key="o.id" @click="onglet = o.id"
         :class="['flex items-center justify-center gap-2 rounded-lg py-2 font-semibold', onglet === o.id ? 'bg-nuit text-white' : 'text-encre/70']">
         <component :is="o.icone" class="size-4" /> {{ o.nom }}
+        <span v-if="o.id === 'epreuves'" class="font-mono text-xs opacity-70">{{ nbEpreuves }}</span>
       </button>
     </div>
 
@@ -42,37 +56,65 @@ const liens = sources.filter((x) => x.url.includes('kamerpower') || x.url.includ
           <ChevronRight class="chev size-5 transition-transform" />
         </summary>
         <div class="px-4 pb-4 space-y-3">
-          <article v-for="(e, i) in parNiveau(n.id)" :key="i" class="rounded-lg border border-papier p-3">
-            <h3 class="font-semibold">{{ e.titre }}</h3>
-            <p class="mt-1 whitespace-pre-line">{{ e.enonce }}</p>
-            <button @click="basculer(props.matiere, e.titre)"
-              :class="['mt-2 mr-3 inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold', estReussi(props.matiere, e.titre) ? 'bg-vert text-white' : 'bg-papier text-encre/70']">
-              <CircleCheck class="size-4" /> {{ estReussi(props.matiere, e.titre) ? 'Réussi' : 'Marquer réussi' }}
-            </button>
-            <details class="mt-2 inline-block">
+          <article v-for="e in parNiveau(n.id)" :key="e.titre" class="rounded-lg border border-papier p-3">
+            <h3 class="font-semibold flex items-center gap-2">
+              {{ e.titre }}
+              <span v-if="e.generer" class="text-[10px] font-mono uppercase rounded bg-jaune/60 px-1.5 py-0.5">variantes</span>
+            </h3>
+            <p class="mt-1 whitespace-pre-line">{{ contenu(e).enonce }}</p>
+            <div class="mt-2 flex flex-wrap items-center gap-2">
+              <button @click="basculer(props.matiere, e.titre)"
+                :class="['inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold', estReussi(props.matiere, e.titre) ? 'bg-vert text-white' : 'bg-papier text-encre/70']">
+                <CircleCheck class="size-4" /> {{ estReussi(props.matiere, e.titre) ? 'Réussi' : 'Marquer réussi' }}
+              </button>
+              <button v-if="e.generer" @click="nouvelle(e)" class="inline-flex items-center gap-1 rounded-full bg-nuit px-3 py-1 text-sm font-semibold text-white">
+                <Shuffle class="size-4" /> Nouvelle variante
+              </button>
+            </div>
+            <details class="mt-2">
               <summary class="inline-flex items-center gap-1 text-sm font-semibold text-vert"><Eye class="size-4" /> Voir la correction</summary>
-              <p class="mt-2 whitespace-pre-line rounded-lg bg-papier p-3 text-sm">{{ e.solution }}</p>
+              <p class="mt-2 whitespace-pre-line rounded-lg bg-papier p-3 text-sm">{{ contenu(e).solution }}</p>
             </details>
           </article>
           <p v-if="!parNiveau(n.id).length" class="text-sm text-encre/60">Bientôt disponible.</p>
         </div>
       </details>
-    </template>
 
-    <template v-else>
-      <p class="text-sm text-encre/70 mb-3">Les sujets officiels ne sont pas recopiés ici. Ouvre l’année puis la source, et cherche « {{ m.nom }} {{ s.nom }} ».</p>
-      <details v-for="a in annees" :key="a" class="mb-2 rounded-xl bg-white shadow-sm">
-        <summary class="flex items-center justify-between px-4 py-3 font-mono font-medium">
-          Bac {{ a }} <ChevronRight class="chev size-5 transition-transform" />
+      <details v-if="fiches.length" class="mb-3 rounded-xl bg-white shadow-sm">
+        <summary class="flex items-center gap-3 px-4 py-3">
+          <FolderOpen class="size-5 text-vert" />
+          <span class="flex-1 font-semibold">Séries d’exercices de profs <span class="font-mono text-xs text-encre/50">{{ fiches.length }} PDF</span></span>
+          <ChevronRight class="chev size-5 transition-transform" />
         </summary>
-        <ul class="px-4 pb-3 space-y-2">
-          <li v-for="l in liens" :key="l.url">
-            <a :href="l.url" target="_blank" rel="noopener" class="flex items-center gap-2 text-sm text-vert hover:underline">
-              <ExternalLink class="size-4 shrink-0" /> {{ l.nom }}
-              <span class="ml-auto text-xs text-encre/50">{{ l.statut }}</span>
+        <ul class="px-4 pb-3 divide-y divide-papier">
+          <li v-for="x in fiches" :key="x.url">
+            <a :href="x.url" target="_blank" rel="noopener" class="flex items-center gap-2 py-2 text-sm hover:text-vert">
+              <ExternalLink class="size-4 shrink-0 text-vert" /> <span class="flex-1">{{ x.titre }}</span>
+              <span class="text-xs text-encre/50">{{ x.type === 'chapitre' ? 'par chapitre' : x.type }}</span>
             </a>
           </li>
         </ul>
+        <p class="px-4 pb-3 text-xs text-encre/50">Source : {{ fiches[0].source }}.</p>
+      </details>
+    </template>
+
+    <template v-else>
+      <p v-if="!annees.length" class="text-sm text-encre/70">Aucune épreuve trouvée pour cette matière et cette série.</p>
+      <details v-for="([an, liste], i) in annees" :key="an" class="mb-2 rounded-xl bg-white shadow-sm" :open="i === 0">
+        <summary class="flex items-center justify-between px-4 py-3">
+          <span class="font-mono font-medium">Bac {{ an }}</span>
+          <span class="flex items-center gap-2 text-xs text-encre/50">{{ liste.length }} PDF <ChevronRight class="chev size-5 transition-transform text-encre" /></span>
+        </summary>
+        <ul class="px-4 pb-3 divide-y divide-papier">
+          <li v-for="e in liste" :key="e.url">
+            <a :href="e.url" target="_blank" rel="noopener" class="flex items-center gap-2 py-2 text-sm hover:text-vert">
+              <component :is="e.type === 'corrige' ? FileCheck : FileText" :class="['size-4 shrink-0', e.type === 'corrige' ? 'text-vert' : 'text-nuit']" />
+              <span class="flex-1">{{ e.titre }}</span>
+              <span class="shrink-0 rounded bg-papier px-1.5 py-0.5 font-mono text-[10px]">{{ e.groupe === 1 ? '1er gr' : '2e gr' }}</span>
+            </a>
+          </li>
+        </ul>
+        <p class="px-4 pb-3 text-xs text-encre/50">PDF hébergés par : {{ [...new Set(liste.map((e) => e.source))].join(', ') }}.</p>
       </details>
     </template>
   </div>
