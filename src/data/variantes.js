@@ -1,12 +1,7 @@
 // Exercices à variantes : chaque clic sur « Nouvelle variante » tire de nouveaux nombres
 // et recalcule la correction. Écrits pour ce site.
 
-const ent = (a, b) => a + Math.floor(Math.random() * (b - a + 1))
-const choix = (t) => t[ent(0, t.length - 1)]
-const nz = (a, b) => { let x; do x = ent(a, b); while (x === 0); return x }
-const f = (x, d = 2) => Number(x.toFixed(d)).toLocaleString('fr-FR')
-// Terme signé pour écrire « ax + b » ; un terme nul disparaît.
-const sg = (x) => (x === 0 ? '' : x < 0 ? `− ${-x}` : `+ ${x}`)
+import { ent, choix, nz, f, sg } from './outils.js'
 
 export const variantes = {
   maths: [

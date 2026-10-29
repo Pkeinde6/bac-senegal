@@ -3,7 +3,7 @@
 
 const mathsS1S3 = ['Nombres complexes', 'Arithmétique', 'Suites numériques', 'Limites et continuité', 'Dérivation et étude de fonctions', 'Calcul intégral', 'Équations différentielles', 'Barycentres et géométrie plane', 'Produit vectoriel et géométrie dans l’espace', 'Transformations du plan', 'Coniques', 'Probabilités et dénombrement']
 const mathsS2 = ['Limites et continuité', 'Dérivation et étude de fonctions', 'Fonctions usuelles (ln, exp, puissances)', 'Suites numériques', 'Calcul intégral', 'Équations différentielles', 'Nombres complexes', 'Statistiques', 'Probabilités et dénombrement']
-const mathsL = ['Fonctions et dérivation', 'Suites numériques', 'Calcul intégral', 'Statistiques', 'Probabilités et dénombrement']
+const mathsL = ['Polynômes et factorisation', 'Probabilités et dénombrement', 'Statistiques', 'Limites et continuité', 'Dérivation et étude de fonctions', 'Fonctions usuelles (ln, exp, puissances)']
 const pcS = ['Cinématique du point', 'Bases de la dynamique', 'Applications de la dynamique', 'Gravitation universelle', 'Champs magnétiques', 'Particule chargée dans un champ magnétique', 'Loi de Laplace', 'Induction – dipôle RL', 'Dipôle RC', 'Oscillations électriques', 'Oscillations mécaniques libres', 'Interférences lumineuses', 'Effet photoélectrique', 'Niveaux d’énergie de l’atome', 'Réactions nucléaires', 'Alcools', 'Amines', 'Acides carboxyliques et dérivés', 'Cinétique chimique', 'Autoprotolyse de l’eau – pH', 'Acide fort – base forte', 'Acides et bases faibles', 'Acide faible / base forte – dosage', 'Acides α-aminés']
 const pcL2 = ['Énergie électrique', 'Énergie nucléaire', 'Ondes mécaniques', 'Aspect ondulatoire de la lumière', 'Aspect corpusculaire de la lumière', 'Matières plastiques', 'Textiles', 'Savons']
 const svtS = ['Système nerveux', 'Tissu nerveux', 'Muscle strié squelettique', 'Activité cardiaque et pression artérielle', 'Régulation de la glycémie', 'Immunologie', 'Reproduction chez les mammifères', 'Reproduction chez les spermaphytes', 'Génétique', 'Hérédité humaine', 'Biotechnologies']
@@ -13,7 +13,7 @@ const autres = {
   francais: ['Figures de style', 'Résumé et discussion', 'Commentaire de texte', 'Dissertation littéraire'],
   hg: ['Histoire du Sénégal et de l’Afrique', 'Relations internationales depuis 1945', 'Géographie du Sénégal', 'Croquis et méthode'],
   anglais: ['Grammar', 'Reading comprehension', 'Essay writing'],
-  eco: ['Agrégats et croissance', 'Monnaie, prix et inflation'],
+  eco: ['Agrégats et croissance', 'Monnaie, prix et inflation', 'Commerce international'],
   compta: ['Bilan et comptes', 'Amortissements', 'Analyse des coûts'],
   techno: ['Électricité', 'Mécanique et transmissions'],
   langues: ['Compréhension', 'Expression écrite'],

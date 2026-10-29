@@ -5,12 +5,31 @@
   --color-nuit: #003D24;
   --color-encre: #0E1A14;
   --color-papier: #F3F6F1;
+  --color-carte: #FFFFFF;
   --color-jaune: #FDEF42;
+  /* Texte posé sur du jaune : reste foncé même en mode sombre. */
+  --color-noir: #0E1A14;
   --font-sans: "Outfit", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Mode sombre : automatique (réglage du téléphone) ou choisi dans Outils. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-encre: #E3ECE6;
+    --color-papier: #0B1510;
+    --color-carte: #14231B;
+    --color-vert: #1FA35A;
+  }
+}
+:root[data-theme="dark"] {
+  --color-encre: #E3ECE6;
+  --color-papier: #0B1510;
+  --color-carte: #14231B;
+  --color-vert: #1FA35A;
 }
 
 body { @apply bg-papier text-encre font-sans antialiased; }
 details > summary { list-style: none; cursor: pointer; }
 details > summary::-webkit-details-marker { display: none; }
-details[open] .chev { transform: rotate(90deg); }
+details[open] > summary .chev { transform: rotate(90deg); }

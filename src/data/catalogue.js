@@ -33,6 +33,7 @@ export const sources = [
   { nom: 'Sigmaths — sujets de maths du Bac sénégalais', url: 'https://www.sigmaths.net/bac2/Senegal.php', statut: 'Non officiel', droits: 'Archives de maths 2007–2023 avec corrections. Liens directs, pas de copie.' },
   { nom: 'Cissé Doro — sciences physiques Terminale S', url: 'https://cisse-doro.e-monsite.com/pages/terminale-s1-s2.html', statut: 'Professeur', droits: 'Séries d’exercices par chapitre et sujets 2006–2017. Œuvre du professeur : lien uniquement.' },
   { nom: 'Wahab Diop — séries de physique TS', url: 'https://physiquechimie.godaddysites.com/td-physique-ts', statut: 'Professeur', droits: 'Séries d’exercices récentes. Lien uniquement.' },
-  { nom: 'Sunumaths — cours et exercices de maths', url: 'https://sunumaths.com/', statut: 'Professeur', droits: 'Cours avec exercices corrigés (TS2). Lien uniquement.' },
+  { nom: 'Sunumaths — cours et exercices de maths', url: 'https://sunumaths.com/', statut: 'Professeur', droits: 'Cours avec exercices corrigés (TS2) de M. Babacar Djitté. Lu dans la liseuse, sans copie.' },
+  { nom: 'M. Tall — fascicules et bacs blancs Terminale S', url: 'https://www.monsieurtall.com/Tle%20S/', statut: 'Professeur', droits: 'Fascicules de maths et de physique-chimie. Lien vers son site uniquement.' },
   { nom: 'Kamerpower — archives toutes séries', url: 'https://kamerpower.com/fr/epreuves-du-bac-senegal-et-corrections-de-2010-a-2020-pdf-toutes-series/', statut: 'Non officiel', droits: 'Agrégateur : renvoie surtout vers les PDF de l’Office. Lien uniquement.' },
 ]

@@ -38,7 +38,9 @@ const exos = []
 for (const [fic, mat, source] of tiers) {
   const txt = fs.readFileSync(path.join(dl, fic), 'utf8')
   for (const m of txt.matchAll(/<a [^>]*href="([^"]+\.pdf)"[^>]*>([\s\S]*?)<\/a>/gi)) {
-    const url = m[1].replace(/^http:/, 'https:'), lab = unesc(m[2]).replace(/&nbsp;/g, ' ').trim()
+    // Sigmaths passe par une page « Reader.php » ; on vise directement le PDF (lisible par la liseuse).
+    const url = m[1].replace(/^http:/, 'https:').replace(/Reader\.php\?var=(.+)$/, (_, v) => v.replace(/ax0by99by/g, '/'))
+    const lab = unesc(m[2]).replace(/&nbsp;/g, ' ').trim()
     const fn = decodeURIComponent(url.split(/[\/=]/).pop()).replace(/^bac2ax0by99bySenegalax0by99by/, '')
     if (/programme/i.test(fn) || items.has(url)) continue
     const an = fn.match(/(20[0-2]\d)/) || fn.match(/[-_ ](0\d|1\d)(?=\.pdf)/)
